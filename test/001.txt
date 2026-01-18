@@ -1,1 +1,64 @@
 teste 1
+
+
+import os
+
+def exibir_tabuleiro(tabuleiro):
+    os.system('cls' if os.name == 'nt' else 'clear') # Limpa o terminal
+    print(" 1 | 2 | 3 ")
+    print("---+---+---")
+    print(" 4 | 5 | 6 ")
+    print("---+---+---")
+    print(" 7 | 8 | 9 \n")
+    
+    # Exibe o tabuleiro atual
+    for i in range(3):
+        print(f" {tabuleiro[i][0]} | {tabuleiro[i][1]} | {tabuleiro[i][2]} ")
+        if i < 2:
+            print("---+---+---")
+    print("\n")
+
+def verificar_vitoria(tabuleiro, jogador):
+    # Verifica linhas, colunas e diagonais
+    for i in range(3):
+        if all([spot == jogador for spot in tabuleiro[i]]): return True
+        if all([tabuleiro[j][i] == jogador for j in range(3)]): return True
+    if tabuleiro[0][0] == tabuleiro[1][1] == tabuleiro[2][2] == jogador: return True
+    if tabuleiro[0][2] == tabuleiro[1][1] == tabuleiro[2][0] == jogador: return True
+    return False
+
+def jogar():
+    tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
+    jogador_atual = 'X'
+    movimentos = 0
+    
+    while movimentos < 9:
+        exibir_tabuleiro(tabuleiro)
+        print(f"Jogador {jogador_atual}, escolha uma posição (1-9): ", end="")
+        
+        try:
+            escolha = int(input()) - 1
+            linha, coluna = divmod(escolha, 3)
+            
+            if 0 <= escolha <= 8 and tabuleiro[linha][coluna] == ' ':
+                tabuleiro[linha][coluna] = jogador_atual
+                movimentos += 1
+                
+                if verificar_vitoria(tabuleiro, jogador_atual):
+                    exibir_tabuleiro(tabuleiro)
+                    print(f"Jogador {jogador_atual} venceu!")
+                    return
+                
+                jogador_atual = 'O' if jogador_atual == 'X' else 'X'
+            else:
+                print("Movimento inválido. Tente novamente.")
+                input()
+        except ValueError:
+            print("Entrada inválida. Digite um número de 1 a 9.")
+            input()
+            
+    exibir_tabuleiro(tabuleiro)
+    print("Empate!")
+
+if __name__ == "__main__":
+    jogar()
